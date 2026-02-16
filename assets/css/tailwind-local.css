@@ -1,0 +1,33 @@
+/* Local utility stylesheet for Guest Post WST (Tailwind-like subset loaded from plugin). */
+*,::before,::after{box-sizing:border-box}
+.mx-auto{margin-left:auto;margin-right:auto}.my-10{margin-top:2.5rem;margin-bottom:2.5rem}
+.max-w-3xl{max-width:48rem}.rounded-3xl{border-radius:1.5rem}.rounded-2xl{border-radius:1rem}.rounded-xl{border-radius:.75rem}.rounded-lg{border-radius:.5rem}
+.border{border-width:1px;border-style:solid}.border-0{border:0}.border-dashed{border-style:dashed}.border-slate-200{border-color:#e2e8f0}.border-slate-300{border-color:#cbd5e1}.border-slate-400{border-color:#94a3b8}
+.bg-white{background:#fff}.bg-white\/95{background:rgba(255,255,255,.95)}.bg-slate-50{background:#f8fafc}.bg-slate-900{background:#0f172a}.hover\:bg-slate-700:hover{background:#334155}
+.text-white{color:#fff}.text-slate-900{color:#0f172a}.text-slate-800{color:#1e293b}.text-slate-700{color:#334155}.text-slate-600{color:#475569}.text-slate-500{color:#64748b}.hover\:text-slate-900:hover{color:#0f172a}
+.p-1{padding:.25rem}.p-6{padding:1.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}
+.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}
+.pt-2{padding-top:.5rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}
+.block{display:block}.inline-flex{display:inline-flex}.flex{display:flex}.grid{display:grid}.w-full{width:100%}
+.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-y-2>*+*{margin-top:.5rem}.space-y-6>*+*{margin-top:1.5rem}
+.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}
+.text-sm{font-size:.875rem}.text-2xl{font-size:1.5rem;line-height:2rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}.tracking-tight{letter-spacing:-.025em}
+.shadow-sm{box-shadow:0 1px 2px rgba(15,23,42,.08)}.shadow-2xl{box-shadow:0 24px 64px -32px rgba(15,23,42,.35)}
+.transition{transition:all .2s ease}.outline-none{outline:0}
+.focus\:outline-none:focus{outline:0}.focus\:border-slate-400:focus{border-color:#94a3b8}.focus\:ring-2:focus{box-shadow:0 0 0 2px rgba(148,163,184,.35)}
+.hover\:border-slate-400:hover{border-color:#94a3b8}
+.file\:mr-4::file-selector-button{margin-right:1rem}.file\:rounded-lg::file-selector-button{border-radius:.5rem}.file\:border-0::file-selector-button{border:0}
+.file\:bg-slate-900::file-selector-button{background:#0f172a}.file\:px-4::file-selector-button{padding-left:1rem;padding-right:1rem}
+.file\:py-2::file-selector-button{padding-top:.5rem;padding-bottom:.5rem}.file\:text-sm::file-selector-button{font-size:.875rem}
+.file\:font-medium::file-selector-button{font-weight:500}.file\:text-white::file-selector-button{color:#fff}.hover\:file\:bg-slate-700:hover::file-selector-button{background:#334155}
+
+.gpwst-ui-wrapper a{text-decoration:none}
+.gpwst-ui-wrapper .wp-editor-wrap{border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden}
+.gpwst-ui-wrapper .wp-editor-container textarea{padding:1rem}
+
+@media (min-width:640px){
+  .sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}
+  .sm\:text-base{font-size:1rem}
+  .sm\:p-10{padding:2.5rem}
+  .sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
