@@ -26,6 +26,18 @@ final class Guest_Post_WST_Plugin
         add_action('admin_post_gpwst_submit_post', [$this, 'handle_post_submission']);
         add_action('admin_post_nopriv_gpwst_submit_post', [$this, 'handle_guest_submission']);
         add_action('admin_menu', [$this, 'register_admin_page']);
+        add_action('wp_enqueue_scripts', [$this, 'register_frontend_assets']);
+    }
+
+    public function register_frontend_assets(): void
+    {
+        wp_register_script(
+            'gpwst-tailwind-cdn',
+            'https://cdn.tailwindcss.com',
+            [],
+            null,
+            false
+        );
     }
 
     public function load_textdomain(): void
@@ -67,19 +79,32 @@ final class Guest_Post_WST_Plugin
     {
         $message = $this->get_message_from_request();
 
+        wp_enqueue_script('gpwst-tailwind-cdn');
+
         ob_start();
 
+        ?>
+        <div class="gpwst-ui-wrapper max-w-3xl mx-auto my-10 rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-10 shadow-[0_24px_64px_-32px_rgba(15,23,42,0.35)] backdrop-blur-sm text-slate-800">
+            <div class="mb-8">
+                <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900"><?php echo esc_html__('Guest Post Submission', 'guest-post-wst'); ?></h2>
+                <p class="mt-2 text-sm sm:text-base text-slate-500"><?php echo esc_html__('A clean and simple workflow for sharing your article. Your content stays pending until approved by the admin.', 'guest-post-wst'); ?></p>
+            </div>
+        <?php
+
         if ($message !== '') {
-            echo '<div class="gpwst-message">' . esc_html($message) . '</div>';
+            echo '<div class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">' . esc_html($message) . '</div>';
         }
 
         if (! is_user_logged_in()) {
             $login_url    = wp_login_url(get_permalink() ?: home_url('/'));
             $register_url = wp_registration_url();
 
-            echo '<p>' . esc_html__('Please log in to submit a post.', 'guest-post-wst') . '</p>';
-            echo '<p><a href="' . esc_url($login_url) . '">' . esc_html__('Log in', 'guest-post-wst') . '</a>';
-            echo ' | <a href="' . esc_url($register_url) . '">' . esc_html__('Register', 'guest-post-wst') . '</a></p>';
+            echo '<p class="text-slate-600">' . esc_html__('Please log in to submit a post.', 'guest-post-wst') . '</p>';
+            echo '<p class="mt-4 flex flex-wrap items-center gap-3">';
+            echo '<a class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700" href="' . esc_url($login_url) . '">' . esc_html__('Log in', 'guest-post-wst') . '</a>';
+            echo '<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900" href="' . esc_url($register_url) . '">' . esc_html__('Register', 'guest-post-wst') . '</a>';
+            echo '</p>';
+            echo '</div>';
 
             return (string) ob_get_clean();
         }
@@ -89,48 +114,51 @@ final class Guest_Post_WST_Plugin
         ]);
 
         ?>
-        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-            <p>
-                <label for="gpwst_title"><?php echo esc_html__('Title', 'guest-post-wst'); ?></label><br>
-                <input type="text" id="gpwst_title" name="gpwst_title" required maxlength="200">
-            </p>
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data" class="space-y-6">
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-700" for="gpwst_title"><?php echo esc_html__('Title', 'guest-post-wst'); ?></label>
+                <input class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" type="text" id="gpwst_title" name="gpwst_title" required maxlength="200" placeholder="<?php echo esc_attr__('Write a clear and engaging title', 'guest-post-wst'); ?>">
+            </div>
 
-            <p>
-                <label for="gpwst_description"><?php echo esc_html__('Description', 'guest-post-wst'); ?></label><br>
-                <textarea id="gpwst_description" name="gpwst_description" rows="8" required></textarea>
-            </p>
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-700" for="gpwst_description"><?php echo esc_html__('Description', 'guest-post-wst'); ?></label>
+                <textarea class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" id="gpwst_description" name="gpwst_description" rows="8" required placeholder="<?php echo esc_attr__('Share the body of your post...', 'guest-post-wst'); ?>"></textarea>
+            </div>
 
-            <p>
-                <label for="gpwst_category"><?php echo esc_html__('Category', 'guest-post-wst'); ?></label><br>
-                <select id="gpwst_category" name="gpwst_category" required>
-                    <option value=""><?php echo esc_html__('Select a category', 'guest-post-wst'); ?></option>
-                    <?php foreach ($categories as $category) : ?>
-                        <option value="<?php echo esc_attr((string) $category->term_id); ?>">
-                            <?php echo esc_html($category->name); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </p>
+            <div class="grid gap-6 sm:grid-cols-2">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700" for="gpwst_category"><?php echo esc_html__('Category', 'guest-post-wst'); ?></label>
+                    <select class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" id="gpwst_category" name="gpwst_category" required>
+                        <option value=""><?php echo esc_html__('Select a category', 'guest-post-wst'); ?></option>
+                        <?php foreach ($categories as $category) : ?>
+                            <option value="<?php echo esc_attr((string) $category->term_id); ?>">
+                                <?php echo esc_html($category->name); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <p>
-                <label for="gpwst_tags"><?php echo esc_html__('Tags (comma separated)', 'guest-post-wst'); ?></label><br>
-                <input type="text" id="gpwst_tags" name="gpwst_tags" maxlength="300">
-            </p>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700" for="gpwst_tags"><?php echo esc_html__('Tags (comma separated)', 'guest-post-wst'); ?></label>
+                    <input class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" type="text" id="gpwst_tags" name="gpwst_tags" maxlength="300" placeholder="<?php echo esc_attr__('tech, tutorial, wordpress', 'guest-post-wst'); ?>">
+                </div>
+            </div>
 
-            <p>
-                <label for="gpwst_thumbnail"><?php echo esc_html__('Thumbnail', 'guest-post-wst'); ?></label><br>
-                <input type="file" id="gpwst_thumbnail" name="gpwst_thumbnail" accept="image/*">
-            </p>
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-700" for="gpwst_thumbnail"><?php echo esc_html__('Thumbnail', 'guest-post-wst'); ?></label>
+                <input class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700" type="file" id="gpwst_thumbnail" name="gpwst_thumbnail" accept="image/*">
+            </div>
 
-            <p><?php echo esc_html__('Your post will be published after admin approval.', 'guest-post-wst'); ?></p>
+            <p class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600"><?php echo esc_html__('Your post will be published after admin approval.', 'guest-post-wst'); ?></p>
 
             <?php wp_nonce_field(self::NONCE_ACTION, self::NONCE_NAME); ?>
             <input type="hidden" name="action" value="gpwst_submit_post">
 
-            <p>
-                <button type="submit"><?php echo esc_html__('Submit Post', 'guest-post-wst'); ?></button>
-            </p>
+            <div class="pt-2">
+                <button class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" type="submit"><?php echo esc_html__('Submit Post', 'guest-post-wst'); ?></button>
+            </div>
         </form>
+        </div>
         <?php
 
         return (string) ob_get_clean();
